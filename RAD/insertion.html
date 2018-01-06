@@ -19,10 +19,6 @@
             <div class="jsavcontrols"></div>
             <span class="jsavcounter"></span>
             <!-- <a class="jsavsettings" href="#">Settings</a> -->
-            <p class="instructLabel">Instructions:</p>
-            <p class="instructions">
-                    Use Insertion Sort to sort the table given below in ascending order. Click on an item to select it and copy its value to another position by clicking again.
-            </p>
             <p class="jsavscore"></p>
             <ol id="modelArray"></ol>
             <!-- <p class="jsavoutput jsavline"></p> -->
@@ -93,7 +89,6 @@
                 curLine = 4;
               }
               while (j > 0 && parseInt(jsavArray.value(j-1)) > parseInt(jsavArray.value(j))) {
-                av.umsg('Shift "'+jsavArray.value(j)+'" to the left.')
                 code.setCurrentLine(5); 
                 jsavArray.swap(j, j-1);
                 jsavArray.css(true, {"background-color": "#ddd"});              
