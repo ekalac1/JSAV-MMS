@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example of Binary Tree</title>
+    <link rel="stylesheet" href="../css/JSAV.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+    <style>
+    #av {
+      width: 98%;
+      position: relative;
+    }
+    .jsavcounter {
+      position: absolute;
+      top: 15px;
+    }
+    .jsavtree {
+      position: relative;
+      width: 500px;
+      height: 300px;
+    }
+    svg {
+      height: 600px;
+    }
+    path {
+      pointer-events: visible;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>JSAV slideshow for binary trees</h1>
+    <div id="av">
+      <div class="jsavcontrols"></div><span class="jsavcounter"></span>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="../lib/jquery.transit.js"></script>
+    <script src="../lib/raphael.js"></script>
+    <script src="../build/JSAV.js"></script>
+    <script>
+    var jsav = new JSAV("av");
+    var bt = jsav.ds.binarytree();
+    var line = 1;
+    var pseudo = jsav.code(`y = NIL
+x<-korijen
+while (x != NIL) do
+  y <- x
+  if (kljuc(noviCvor) < kljuc(x) then
+    x <- lijevi(x)
+  else
+    x <- desni(x)
+  end if
+end while
+if (y = NIL) then
+  korijen <- noviCvor
+else
+  if (kljuc(noviCvor) < kljuc(y)) then
+    lijevi(y) <- noviCvor
+  else
+    desni(y) <- noviCvor
+  end_if
+end`, {lineNumbers: true});
+    bt.layout(); // ..update layout
+    var node15 = bt.newNode("15");
+    node15.css({"color": "red"});        
+    bt.root(node15); // set the value of the root
+    jsav.displayInit();
+    bt.layout(); // ..update layout    
+    jsav.step();
+    pseudo.setCurrentLine(1);     
+    jsav.step();
+    pseudo.setCurrentLine(2);
+    jsav.step();    
+    pseudo.setCurrentLine(11);         
+    jsav.step();
+    node15.css({"color": "black"});
+    bt.layout(); // ..update layout        
+    pseudo.setCurrentLine(12);         
+    jsav.step();
+    pseudo.setCurrentLine(19);
+    jsav.step();
+    pseudo.setCurrentLine(1);   
+    var node18 = bt.newNode("18");
+    node18.css({"color": "red", "left": parseInt(node15.css("left"), 10) + 60});    
+    bt.layout(); // ..update layout
+    jsav.step();
+    pseudo.setCurrentLine(2); 
+    node15.css({"background-color": "yellow"}); //highlight root    
+    bt.layout(); // ..update layout    
+    jsav.step();
+    pseudo.setCurrentLine(3); 
+    jsav.step();
+    pseudo.setCurrentLine(4); 
+    node15.css({"color": "green"}); //highlight root
+    jsav.step();
+    pseudo.setCurrentLine(5); 
+    jsav.step();
+    pseudo.setCurrentLine(8);
+    node15.css({"background-color": "white"}); //highlight root        
+    bt.layout(); // ..update layout        
+    jsav.step();
+    pseudo.setCurrentLine(10);
+    jsav.step();
+    pseudo.setCurrentLine(3);
+    jsav.step();
+    pseudo.setCurrentLine(11);
+    jsav.step();
+    pseudo.setCurrentLine(13);
+    jsav.step();
+    pseudo.setCurrentLine(14);
+    jsav.step();
+    pseudo.setCurrentLine(17);
+    node15.right(node18); //highlight root  
+    node18.css({color: 'black'})          
+    node15.css({color: 'black'})          
+    bt.layout(); // ..update layout    
+    jsav.step();
+    pseudo.setCurrentLine(1);   
+    var node21 = bt.newNode("21");
+    node21.css({"color": "red", "left": parseInt(node15.css("left"), 10) + 60});    
+    bt.layout(); // ..update layout
+    jsav.step();
+    pseudo.setCurrentLine(2); 
+    node15.css({"background-color": "yellow"}); //highlight root    
+    bt.layout(); // ..update layout    
+    jsav.step();
+    pseudo.setCurrentLine(3); 
+    jsav.step();
+    pseudo.setCurrentLine(4); 
+    node15.css({"color": "green"}); //highlight root
+    jsav.step();
+    pseudo.setCurrentLine(5); 
+    jsav.step();
+    pseudo.setCurrentLine(8);
+    node15.css({"background-color": "white"}); //highlight root        
+    node18.css({"background-color": "yellow"}); //highlight root        
+    bt.layout(); // ..update layout        
+    jsav.step();
+    pseudo.setCurrentLine(10);
+    jsav.step();
+    pseudo.setCurrentLine(3);
+    jsav.step();
+    pseudo.setCurrentLine(4); 
+    node15.css({"color": "black"}); //highlight root    
+    node18.css({"color": "green"}); //highlight root
+    jsav.step();
+    pseudo.setCurrentLine(5); 
+    jsav.step();
+    pseudo.setCurrentLine(8); 
+    node18.css({"background-color": "white"}); //highlight root            
+    jsav.step();
+    pseudo.setCurrentLine(10);
+    jsav.step();
+    pseudo.setCurrentLine(11);
+    jsav.step();
+    pseudo.setCurrentLine(13);
+    jsav.step();
+    pseudo.setCurrentLine(14);
+    jsav.step();
+    pseudo.setCurrentLine(17);
+    node18.right(node21); //highlight root  
+    node18.css({color: 'black'})          
+    node21.css({color: 'black'})          
+    bt.layout(); // ..update layout    
+    jsav.recorded(); // done recording changes, will rewind
+   
+    $(".jsavtreenode").live("hover", function() {
+      //console.log($(this).text(), $(this).offset().left, $(this).offset().top);
+    });
+    $("path").live("hover", function() {
+      //console.log($(this).attr("d"));
+    });
+    </script>
+  </body>
+</html>
