@@ -31,11 +31,11 @@
     <script src="../build/JSAV.js"></script>
 
         <script>
-            var arraySize = 10,
-            initialArray = [],
+            var velicinaNiza = 10,
+            pocetniNiz = [],
             jsavArray,
             swapIndex,
-            $array = $("#modelArray"),
+            niz = $("#modelArray"),
             av = new JSAV($("#jsavcontainer")),
             code = av.code(
                 "public static void insertionSort(int[] table) {\n"+
@@ -50,20 +50,19 @@
 
 
             function initialize() {
-            var htmldata = "";
-            for (var i = 0; i < arraySize; i++) {
+            var htmlNiz = "";
+            for (var i = 0; i < velicinaNiza; i++) {
                 randomVal = Math.floor(Math.random()*100) + 10;
-                htmldata += "<li>" + randomVal + "</li>";
-                initialArray[i] = randomVal;
+                htmlNiz += "<li>" + randomVal + "</li>";
             }
-            $array.html(htmldata);
+            niz.html(htmlNiz);
             swapIndex = av.variable(-1);
             av.forward();
-            jsavArray = av.ds.array($array, {indexed: true, layout: "bar"});
+            jsavArray = av.ds.array(niz, {indexed: true, layout: "bar"});
             code.show();
             return jsavArray;
         }
-            var curLine = 1;
+            var trenutnaLinija = 1;
             initialize();
             var oldfx;            
             av._undo = [];
@@ -71,22 +70,22 @@
             code.setCurrentLine(2); 
             av.step();
             
-            for (var i = 1; i < arraySize; i++) {
+            for (var i = 1; i < velicinaNiza; i++) {
               code.setCurrentLine(3); 
               jsavArray.css(true, {"background-color": "#ddd"});              
               jsavArray.css(i, {"background-color": "#eee"});              
 
-              if (curLine != 3)
+              if (trenutnaLinija != 3)
               {
                 av.step();              
-                curLine = 3;
+                trenutnaLinija = 3;
               }
               var j = i;
               code.setCurrentLine(4);               
-              if (curLine != 4)
+              if (trenutnaLinija != 4)
               {
                 av.step();              
-                curLine = 4;
+                trenutnaLinija = 4;
               }
               while (j > 0 && parseInt(jsavArray.value(j-1)) > parseInt(jsavArray.value(j))) {
                 code.setCurrentLine(5); 
@@ -98,15 +97,15 @@
                 code.setCurrentLine(6); 
                 av.step();
                 code.setCurrentLine(4);
-                curLine = 4;
+                trenutnaLinija = 4;
                 av.step();
                 
               }
-              if (curLine != 4)
+              if (trenutnaLinija != 4)
               {
                 code.setCurrentLine(4); 
                 av.step();
-                curLine = 4;
+                trenutnaLinija = 4;
               }
             }
             av.recorded(); 
