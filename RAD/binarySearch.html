@@ -2,32 +2,20 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-        <title>Binary Search</title>
+        <title>Binarna pretraga</title>
         <link rel="stylesheet" href="../css/JSAV.css" type="text/css" />
-        <!-- <link rel="stylesheet" href="opendsaAV.css" type="text/css" /> -->
-        <link rel="stylesheet" href="proficiency.css" type="text/css" />
-        <style>
-          .jsavautoresize .jsavnode {  
-            width: auto;
-            min-width: 36px;
-            height: auto;
-            min-height: 36px;
-            line-height: 36px;
-          }
-        </style>
     </head>
 
     <body>
-        <h1>Binary Search</h1>
-        <div id="jsavcontainer">
-            <p class="instructLabel">Instructions:</p>
+        <h1>Binarna pretraga</h1>
+        <div id="container">
+            <p class="instructLabel">Način upotrebe:</p>
             <p class="instructions">
-                    Find the key given in the exercise by highlighting the <strong>mid points</strong> used in Binary Search. The values are hidden and in <strong>ascending order</strong>.
+                    Pronaći traženi član označavanjem srednjih tačaka. Vrijednosti su u rastućem redoslijedu.
             </p>
             <p align="center" class="jsavexercisecontrols"></p>
-            <p style="text-align:center">Find</p>
-            <ol id="key"></ol>
-            <ol id="exerArray"></ol>
+            <p style="text-align:center">Traženi element</p>
+            <ol id="trazeni"></ol>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
@@ -37,127 +25,86 @@
     
         <script>
 
-        var arraySize = 20,
-            key,
-            initialArray = [],
-            jsavArray,
-            $array = $("#exerArray"),
-            $key = $('#key'),
-            av = new JSAV($("#jsavcontainer"));
+        var arraySize = 20;
+        var trazeni;
+        var pocetniNiz = new Array(arraySize),
+        jsavNiz,
+        trazeniArray,
+            av = new JSAV($("#container")),
+            $array;
 
-        av.recorded(); // we are not recording an AV with an algorithm
+        av.recorded();
 
         function initialize() {
-            
-            turnAnimationOff();
-
-            //generate random array with ascending values
-            var htmldata = "";
-            var randomVal = Math.floor(Math.random()*10);
-            for (var i = 0; i < arraySize; i++) {
-                randomVal += Math.floor(Math.random()*10);
-                htmldata += "<li></li>";
-                initialArray[i] = randomVal;
+            //ako je jsavNiz definisan, znaci da resetujemo vjezbu, pa treba ukloniti elemente
+            if (jsavNiz){
+                jsavNiz.clear();
+                trazeniArray.clear();
             }
-            $array.html(htmldata);
             
-            //generate a random key, the value of which is between the min and max of the array
-            key =initialArray[Math.floor(Math.random() * initialArray.length)];
-            //key = Math.ceil(5* (initialArray[0] + initialArray[arraySize -1]) / 7);
-            $key.html("<li>" + key + "</li>");
-            //insert key into the array (blue box)
-            av.ds.array($key, {indexed: false}).css(0, {"background-color": "#ddf"}).toggleArrow(0);
-            jsavArray = av.ds.array($array, {indexed: true});
-            jsavArray.layout();
+            randomBroj = Math.floor(Math.random()*10);
+            //uzlazna lista
+            for (var i = 0; i < arraySize; i++) {
+                randomBroj += Math.floor(Math.random()*10 + 1);
+                pocetniNiz[i] = randomBroj;
+            }
+            
+            trazeni = pocetniNiz[Math.floor(Math.random() * pocetniNiz.length)];
 
-            restoreAnimationState();
-
-            return jsavArray;
+            trazeniArray = av.ds.array([trazeni], {indexed: false});
+            trazeniArray.css(0, {"background-color": "#ddf"});
+            trazeniArray.toggleArrow(0);
+            jsavNiz = av.ds.array(new Array(arraySize), {indexed: true});
+            jsavNiz.layout();
+            return jsavNiz;
         }
         
-        function modelSolution(jsav) {
-            jsav.ds.array([key], {indexed: false}).css(0, {"background-color": "#ddf"});
-            var modelArray = jsav.ds.array(Array(arraySize), {indexed: true});
+        function modelRjesenja(jsav) {
+            jsav.ds.array([trazeni], {indexed: false}).css(0, {"background-color": "#ddf"});
+            var modelNiz = jsav.ds.array(Array(arraySize), {indexed: true});
 
             jsav._undo = [];
 
-            var low = 0, high = arraySize - 1, mid;
+            var prvi = 0, zadnji = arraySize - 1, mid;
 
-            while (low <= high) {
-                mid = Math.floor( (low + high)/2);
-                jsav.umsg("Low = " + low + " and high = " + high +
-                    ", so mid = ( " + low + " + " + high + " ) / 2 = <strong>" + mid + "</strong> (line 9, division truncates!)");
-                modelArray.value(mid, initialArray[mid]);
-                modelArray.highlight(mid);
-                if (modelArray.value(mid) < key) {
-                    jsav.umsg("<br/>Because " + modelArray.value(mid) + " is less than " + key + ", the new low will be <strong>" + (mid + 1) + "</strong>. (line 10 and 11)", {preserve: true});
-                    low = mid + 1;
-                    paintGrey(modelArray, 0, mid);
+            while (prvi <= zadnji) {
+                mid = Math.floor( (prvi + zadnji)/2);
+                jsav.umsg("donja granica = " + prvi + " gornja granica = " + zadnji +
+                    ", srednja tačka = ( " + prvi + " + " + zadnji + " ) / 2 = " + mid + ")");
+                modelNiz.value(mid, pocetniNiz[mid]);
+                modelNiz.highlight(mid);
+                if (modelNiz.value(mid) < trazeni) {
+                    jsav.umsg("<br/>" + modelNiz.value(mid) + " je manje od " + trazeni + ", nova donja granica je " + (mid + 1) + ".", {preserve: true});
+                    prvi = mid + 1;
                 }
-                if (modelArray.value(mid) > key) {
-                    jsav.umsg("<br/>Because " + modelArray.value(mid) + " is greater than " + key + ", the new high will be <strong>" + (mid - 1) + "</strong>. (line 12 and 13)", {preserve: true});
-                    high = mid - 1;
-                    paintGrey(modelArray, mid, arraySize - 1);
+                if (modelNiz.value(mid) > trazeni) {
+                    jsav.umsg("<br/>" + modelNiz.value(mid) + " je veće od " + trazeni + ", nova gornja granica je " + (mid - 1) + ".", {preserve: true});
+                    zadnji = mid - 1;
                 }
-                if (modelArray.value(mid) === key) {
-                    jsav.umsg("<br/>The key was found at index " + mid + "!", {preserve: true});
-
-                    paintGrey(modelArray, 0, arraySize - 1);
+                if (modelNiz.value(mid) === trazeni) {
+                    jsav.umsg("<br/>Trazeni element je pronađen na indeksu " + mid + ".", {preserve: true});
                 }
                 jsav.stepOption("grade", true);
                 jsav.step();
-                if (modelArray.value(mid) === key) {
-                    return modelArray;
+                if (modelNiz.value(mid) === trazeni) {
+                    return modelNiz;
                 }
             }
-            jsav.umsg("<br/>The key wasn't found in the table.", {preserve: true});
-            return modelArray;
+            return modelNiz;
         }
         
-        var exercise = av.exercise(modelSolution, initialize, {}, {feedback: "atend"});
-        exercise.reset();
+        var vjezba = av.exercise(modelRjesenja, initialize, {feedback: "atend"});
+        vjezba.reset();
         
-        // bind a function to handle all click events on the array
-        jsavArray.click(function(index) {
+        jsavNiz.click(function(index) {
             
-            //if the clicked index is not higlighted earlier, highlight it and paint the ones which are outside of the new range
             if (!this.isHighlight(index)) {
-                this.value(index, initialArray[index]);
-                // if (this.value(index) > key) {
-                //     paintGrey(this, index, arraySize - 1);
-                // } else if (this.value(index) < key) {
-                //     paintGrey(this, 0, index);
-                // }
-                // if (this.value(index) === key) {
-                //     paintGrey(this, 0, arraySize - 1);
-                // }
-                // highlight the index
+                this.value(index, pocetniNiz[index]);
                 this.highlight(index);
-                exercise.gradeableStep();
+                vjezba.gradeableStep();
             }
         });
 
-        // paints the background gray for indices [first, last].
-        function paintGrey(array, first, last) {
-            array.addClass(
-                function(index) {return index >= first && index <= last},
-                "greybackground"
-                );
-        }
-
-        var oldfx;
-
-        function turnAnimationOff() {
-            //save the state of fx.off
-            var oldfx = $.fx.off || false;
-            //turn off the animations
-            $.fx.off = true;
-        }
-
-        function restoreAnimationState() {
-            $.fx.off = oldfx;
-        }
-
-        </script>
+</script>
     </body>
 </html>
